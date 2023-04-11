@@ -103,6 +103,8 @@ MY_IP_ADD_RESS=""
 LXC=""
 LXD=""
 
+[[ "$LXC_DEBUG" == "1" ]] && LXC_DEBUG_OPT="--debug" || LXC_DEBUG_OPT=""
+
 # shellcheck disable=SC1091
 source /etc/os-release
 
@@ -892,7 +894,7 @@ function setup_lxc_container {
 
     IMAGE_SPEC="${IMAGE_REMOTE}:${CONTAINER_FLAVOURS[$CONTAINER_TYPE]}"
     echo "Pulling in container image from $IMAGE_SPEC ..."
-    ${LXC} launch "${IMAGE_SPEC}" "${CONTAINER_NAME}" --profile default --profile "${PROFILE_NAME}" --storage "${STORAGE_POOL_NAME}"  --debug --verbose < /dev/null || lxc_luanch_failed
+    ${LXC} launch "${IMAGE_SPEC}" "${CONTAINER_NAME}" --profile default --profile "${PROFILE_NAME}" --storage "${STORAGE_POOL_NAME}" --verbose $LXC_DEBUG_OPT < /dev/null || lxc_luanch_failed
     echo "Pulling done, setup container ..."
     setup_container_ip
 
