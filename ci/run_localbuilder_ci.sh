@@ -71,6 +71,7 @@ while [[ $# -gt 0 ]];do
         usage;
     ;;
     *)
+        echo "$key is an unknown option"
         usage;
     ;;
     esac

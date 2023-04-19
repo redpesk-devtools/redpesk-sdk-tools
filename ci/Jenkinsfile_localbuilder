@@ -30,7 +30,7 @@ pipeline {
                                         stage("Test SDK ${local_os_path}") {
                                             sh """
                                             cd ci
-                                            ./run_localbuilder_ci.sh --clean --vm-path ${local_os_path} --job_name ${env.JOB_NAME} --destroy
+                                            ./run_localbuilder_ci.sh --clean --vm-path ${local_os_path} --destroy
                                         """
                                         }
                             //    }
