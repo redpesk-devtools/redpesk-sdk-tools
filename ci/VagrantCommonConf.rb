@@ -10,6 +10,10 @@ Vagrant.configure("2") do |config|
   #   # Customize the amount of memory on the VM:
     vb.memory = "2048"
     vb.customize ["modifyvm", :id, '--nested-hw-virt','on']
+
+  #   # disable USB 2.0 support in VirtualBox
+    vb.customize ["modifyvm", :id, "--usb", "on"]
+    vb.customize ["modifyvm", :id, "--usbehci", "off"]
   end
 
   config.vm.synced_folder "../../", "/home/vagrant/ci"
