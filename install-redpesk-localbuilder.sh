@@ -26,22 +26,20 @@ set -o pipefail
 
 function usage {
     printf "Usage: \n\
-        %s config_host\t Install and configure LXC/LXD on your host\n\
-        %s create -c <container_name>\tcreates container\n\
-        %s clean -c <container_name>\tdeletes container and cleans things up\n\
+        %s config_host                   Install and configure LXC/LXD on your host\n\
+        %s create -c <container_name>    Creates container\n\
+        %s clean -c <container_name>     Deletes container and cleans things up\n\
         \n\
-        -c|--container-name\t: give the container name\n\
-        -t|--container-type\t: container type to install [localbuilder|cloud-publication] (default: ${CONTAINER_TYPE_DEFAULT})\n\
-        -i|--container-image\t: image name of the container to use \n\
+        -c|--container-name     : give the container name\n\
+        -t|--container-type     : container type to install [localbuilder|cloud-publication] (default: ${CONTAINER_TYPE_DEFAULT})\n\
+        -i|--container-image    : image name of the container to use \n\
                                     (default for container-type 'localbuilder': ${CONTAINER_LB_IMAGE_DEFAULT})\n\
                                     (default for container-type 'cloud-publication': ${CONTAINER_CP_IMAGE_DEFAULT})\n\
-        -f|--container-file\t: Do not use image from pool but a local *.tar.gz image file\n\
-        -s|--lxd-storage-pool\t: give a specific LXD storage pool to use (default: ${STORAGE_POOL_NAME_DEFAULT})\n\
-        -r|--remote-name\t: LXD remote name to use (default: ${IMAGE_REMOTE})\n\
-        -u|--remote-url\t\t: LXD remote URL to use (default: ${IMAGE_STORE})\n\
-        -a|--non-interactive\t: run the script in non-interactive mode\n\
-        \n\
-        %s --help\t\t\tdisplays this text\n" "$0" "$0" "$0" "$0"
+        -s|--lxd-storage-pool   : give a specific LXD storage pool to use (default: ${STORAGE_POOL_NAME_DEFAULT})\n\
+        -r|--remote-name        : LXD remote name to use (default: ${IMAGE_REMOTE})\n\
+        -u|--remote-url         : LXD remote URL to use (default: ${IMAGE_STORE})\n\
+        -a|--non-interactive    : run the script in non-interactive mode\n\
+        -h|--help               : displays this text\n"
     exit
 }
 
@@ -58,6 +56,7 @@ IMAGE_STORE="download.redpesk.bzh"
 IMAGE_STORE_PASSWD="iotbzh"
 
 declare -A SUPPORTED_FEDORA
+declare -A SUPPORTED_ALMALINUX
 declare -A SUPPORTED_DEBIAN
 declare -A SUPPORTED_UBUNTU
 declare -A SUPPORTED_LINUXMINT
@@ -66,6 +65,7 @@ declare -A SUPPORTED_OPENSUSE
 SUPPORTED_FEDORA["36"]="True"
 SUPPORTED_FEDORA["37"]="True"
 SUPPORTED_FEDORA["38"]="True"
+SUPPORTED_ALMALINUX["8.7"]="True"
 SUPPORTED_DEBIAN["11"]="True"
 SUPPORTED_UBUNTU["20.04"]="True"
 SUPPORTED_UBUNTU["22.04"]="True"
@@ -75,9 +75,6 @@ SUPPORTED_OPENSUSE["15.4"]="True"
 SUPPORTED_OPENSUSE["15.5"]="True"
 
 CONTAINER_USER=devel
-#CONTAINER_GRP=devel
-CONTAINER_UID=$(id -u)
-CONTAINER_GID=$(id -g)
 
 PROFILE_NAME="redpesk"
 STORAGE_POOL_NAME=""
@@ -102,6 +99,7 @@ CONTAINER_FLAVOURS=( ["localbuilder"]="${CONTAINER_LB_IMAGE_DEFAULT}" \
 
 DEFAULT_CNTNR_DIR=${HOME}/my_rp_builder_dir
 INTERACTIVE="yes"
+CLEAN_REMOTE="yes"
 
 #The Ip of the container will be set after the "launch" of the container
 MY_IP_ADD_RESS=""
@@ -117,43 +115,50 @@ while [[ $# -gt 0 ]];do
     key="$1"
     case $key in
     -c|--container-name)
-        CONTAINER_NAME="$2";
-        shift 2;
+        shift
+        CONTAINER_NAME="$1";
+        if [ -z "${CONTAINER_NAME}" ]; then
+            echo -e "ERROR empty container name"
+            usage
+        fi
     ;;
     -t|--container-type)
-        CONTAINER_TYPE="$2";
-        shift 2;
+        shift;
+        CONTAINER_TYPE="$1";
     ;;
     -i|--container-image)
-        CONTAINER_IMAGE="$2";
-        shift 2;
+        shift;
+        CONTAINER_IMAGE="$1";
     ;;
     -f|--container-file)
         CONTAINER_FILE="$2";
         shift 2;
     ;;
     -s|--lxd-storage-pool)
-        STORAGE_POOL_NAME="$2";
-        shift 2;
+        shift;
+        STORAGE_POOL_NAME="$1";
     ;;
     -r|--remote-name)
-        IMAGE_REMOTE="$2";
-        shift 2;
+        shift;
+        IMAGE_REMOTE="$1";
     ;;
     -u|--remote-url)
-        IMAGE_STORE="$2";
-        shift 2;
+        shift;
+        IMAGE_STORE="$1";
     ;;
     -a|--non-interactive)
         INTERACTIVE="no";
-        shift;
     ;;
 	-m|--map-user)
 		# advanced usage (not documented)
         # -m|--map-user: map the specified user (inside container) to the current user (default: ${CONTAINER_USER})
-		CONTAINER_USER="$2";
-		shift 2;
+		shift;
+		CONTAINER_USER="$1";
 	;;
+    --no-clean-remote)
+        # advanced usage (not documented)
+        CLEAN_REMOTE="no";
+    ;;
     -h|--help)
         usage;
     ;;
@@ -164,9 +169,9 @@ while [[ $# -gt 0 ]];do
             echo -e "${RED}Error${NORMAL}: unknown argument '$key'"
             usage;
         fi
-        shift;
     ;;
     esac
+    shift
 done
 
 if [ -z "${CONTAINER_TYPE}" ]; then
@@ -202,8 +207,8 @@ function check_lxc {
     PATH="${PATH}:/snap/bin"
     LXC="$(which lxc)" || echo "No lxc on this host"
     if [ -z "${LXC}" ];then
-            echo "Error: No LXC installed"
-            exit 1
+        echo "Error: No LXC installed"
+        exit 1
     else
         LXC="sudo ${LXC}"
     fi
@@ -214,8 +219,8 @@ function check_lxd {
     PATH="${PATH}:/snap/bin"
     LXD="$(which lxd)" || echo "No lxd on this host"
     if [ -z "${LXD}" ];then
-            echo "Error: No LXD installed"
-            exit 1
+        echo "Error: No LXD installed"
+        exit 1
     else
         LXD="sudo ${LXD}"
     fi
@@ -244,6 +249,12 @@ function check_distribution {
         ;;
     fedora)
         if [[ ! ${SUPPORTED_FEDORA[${VERSION_ID}]} == "True" ]];then
+            echo -e "Unsupported version of distribution: ${ID}"
+            exit 1
+        fi
+        ;;
+    almalinux)
+        if [[ ! ${SUPPORTED_ALMALINUX[${VERSION_ID}]} == "True" ]];then
             echo -e "Unsupported version of distribution: ${ID}"
             exit 1
         fi
@@ -319,6 +330,7 @@ function check_container_name_and_type {
 function clean_subxid {
     echo "cleaning your /etc/subuid /etc/subgid files"
 
+    get_container_uid_gid
     sudo sed -i -e "/^${USER}:${CONTAINER_UID}:1/d" -e "/^root:100000:65536/d" -e "/^root:${CONTAINER_UID}:1/d" /etc/subuid
     sudo sed -i -e "/^${USER}:${CONTAINER_GID}:1/d" -e "/^root:100000:65536/d" -e "/^root:${CONTAINER_GID}:1/d" /etc/subgid
 }
@@ -351,7 +363,7 @@ function clean_lxc_container {
     fi
 
     # The 'local' remote is non-removeable
-    if [[ "${IMAGE_REMOTE}" != "local" ]]; then
+    if [[ "${CLEAN_REMOTE}" == "yes" ]] && [[ "${IMAGE_REMOTE}" != "local" ]]; then
         REMOTE_LIST=$(${LXC} remote list )
         if echo "${REMOTE_LIST}" | grep -q "${IMAGE_REMOTE}" ; then
             echo "Remove ${IMAGE_REMOTE} image store"
@@ -373,29 +385,25 @@ function config_host_group {
 }
 
 function config_host {
+
+    if ! which which >/dev/null; then
+        case ${ID} in
+        ubuntu)
+            sudo apt install -y debianutils
+            ;;
+        fedora|almalinux)
+            sudo dnf install -y which
+            ;;
+        esac
+    fi
+
     echo "Config Lxc on the host"
     HAVE_LXC="$(which lxc)" || echo "No lxc on this host"
     HAVE_JQ="$(which jq)" || echo "No jq on this host"
     HAVE_AWK="$(which awk)" || echo "No awk on this host"
 
     case ${ID} in
-    ubuntu)
-        sudo apt-get update --yes
-        if [ -z "${HAVE_JQ}" ];then
-            echo "Installing jq"
-            sudo DEBIAN_FRONTEND=noninteractive apt-get install --yes jq
-        fi
-        if [ -z "${HAVE_LXC}" ];then
-            echo "Installing lxd from apt"
-            sudo DEBIAN_FRONTEND=noninteractive apt-get install --yes lxd
-        fi
-        if [ -z "${HAVE_AWK}" ];then
-            echo "Installing awk from apt"
-            sudo DEBIAN_FRONTEND=noninteractive apt-get install --yes gawk
-        fi
-        config_host_group
-        ;;
-    linuxmint)
+    ubuntu|linuxmint|debian)
         sudo apt-get update --yes
         if [ -z "${HAVE_JQ}" ];then
             echo "Installing jq"
@@ -403,15 +411,16 @@ function config_host {
         fi
         if [ -z "${HAVE_LXC}" ];then
             SNAP="$(which snap)" || echo "No snap on this host"
-            echo "Installing snap from apt"
             if [ -z "${SNAP}" ]; then
-                sudo rm -f /etc/apt/preferences.d/nosnap.pref
-                sudo DEBIAN_FRONTEND=noninteractive apt-get update
+                echo "Installing snap from apt"
+                if [[ "$ID" == "linuxmint" ]]; then
+                    sudo rm -f /etc/apt/preferences.d/nosnap.pref
+                    sudo DEBIAN_FRONTEND=noninteractive apt-get update
+                fi
                 sudo DEBIAN_FRONTEND=noninteractive apt-get install --yes snapd
             fi
             echo "Installing lxd from snap"
-            sudo snap install core
-            sudo snap install lxd
+            sudo snap install lxd --channel=latest/stable
         fi
         if [ -z "${HAVE_AWK}" ];then
             echo "Installing awk from apt"
@@ -419,29 +428,8 @@ function config_host {
         fi
         config_host_group
         ;;
-    debian)
-        sudo apt-get update  --yes
-        if [ -z "${HAVE_JQ}" ];then
-            echo "Installing jq"
-            sudo DEBIAN_FRONTEND=noninteractive apt-get install --yes jq
-        fi
-        if [ -z "${HAVE_LXC}" ];then
-            SNAP="$(which snap)" || echo "No snap on this host"
-            echo "Installing snap from apt"
-            if [ -z "${SNAP}" ]; then
-                sudo DEBIAN_FRONTEND=noninteractive apt-get install --yes snapd
-            fi
-            echo "Installing lxd from snap"
-            sudo snap install core
-            sudo snap install lxd
-        fi
-        if [ -z "${HAVE_AWK}" ];then
-            echo "Installing awk"
-            sudo DEBIAN_FRONTEND=noninteractive apt-get install --yes gawk
-        fi
-        config_host_group
-        ;;
-    fedora)
+
+    fedora|almalinux)
         if [ -z "${HAVE_JQ}" ];then
             echo "Installing jq"
             sudo dnf install --assumeyes jq
@@ -561,11 +549,33 @@ function restart_lxd {
     sleep 1;
 }
 
+function get_container_uid_gid {
+    set +e
+    state=$(${LXC} ls -c ns -f csv |grep "${CONTAINER_NAME}" |cut -d, -f2)
+    set -e
+    if [[ "$state" == "STOPPED" ]] ; then
+        ${LXC} start "${CONTAINER_NAME}"
+        sleep 1
+        state=$(${LXC} ls -c ns -f csv |grep "${CONTAINER_NAME}" |cut -d, -f2)
+    fi
+    if [[ "$state" == "RUNNING" ]] ; then
+        CONTAINER_UID=$(${LXC} exec "${CONTAINER_NAME}" -- su devel -c 'id -u')
+        CONTAINER_GID=$(${LXC} exec "${CONTAINER_NAME}" -- su devel -c 'id -g')
+    fi
+}
+
 function setup_subgid {
+
     echo "Allow user ID remapping"
 
-    sudo echo "${USER}:${CONTAINER_UID}:1" | sudo tee -a /etc/subuid > /dev/null
-    sudo echo "${USER}:${CONTAINER_GID}:1" | sudo tee -a /etc/subgid > /dev/null
+    get_container_uid_gid
+
+    if [[ "$(id -u)" != "${CONTAINER_UID}" ]]; then
+        sudo echo "${USER}:${CONTAINER_UID}:1" | sudo tee -a /etc/subuid > /dev/null
+    fi
+    if [[ "$(id -g)" != "${CONTAINER_GID}" ]]; then
+        sudo echo "${USER}:${CONTAINER_GID}:1" | sudo tee -a /etc/subgid > /dev/null
+    fi
 
     sudo echo "root:100000:65536" | sudo tee -a /etc/subuid /etc/subgid > /dev/null
 
@@ -576,6 +586,12 @@ function setup_subgid {
 function setup_remote {
     if [[ "${IMAGE_REMOTE}" == "local" ]]; then
         echo "Skipping adding remote as user targeted the 'local' one"
+        return
+    fi
+
+    remote=$( ${LXC} remote list -f csv | grep -c "${IMAGE_REMOTE}" || true)
+    if [[ "$remote" == "1" ]]; then
+        echo "Remote \"${IMAGE_REMOTE}\" already found, use it"
     else
         echo "Adding the LXD image store '${IMAGE_REMOTE}' from: '${IMAGE_STORE}'"
         ${LXC} remote add ${IMAGE_REMOTE} https://${IMAGE_STORE} --password "$IMAGE_STORE_PASSWD" \
@@ -800,17 +816,11 @@ function setup_repositories {
     GetDefaultDir rpmbuild "${build_msg}" var_build_dir
     GetDefaultDir .ssh "${ssh_msg}" var_ssh_dir
 
+    echo "Mapping of host directories to retrieve your files in the container"
     MapHostDir gitsources "${var_gitsources_dir}"
     MapHostDir gitpkgs "${var_gitpkgs_dir}"
     MapHostDir rpmbuild "${var_build_dir}"
     MapHostDir ssh "${var_ssh_dir}"
-
-    echo "Mapping of host directories to retrieve your files in the container"
-
-    #We need to have the same id for user inside/outside container
-	local olduid=$(${LXC} exec "${CONTAINER_NAME}" -- id -u $CONTAINER_USER)
-    ${LXC} exec "${CONTAINER_NAME}" -- sed -i "s/^\($CONTAINER_USER:x:\)${olduid}/\1${CONTAINER_UID}/g" /etc/passwd
-    ${LXC} exec "${CONTAINER_NAME}" -- chown -R $CONTAINER_USER /home/$CONTAINER_USER
 }
 
 
@@ -884,9 +894,10 @@ function fix_container {
     #Add "DNSSEC=no" At the end of the file /etc/systemd/resolved.conf
     ${LXC} exec "${CONTAINER_NAME}" -- bash -c 'sed -i -e '\''$ aDNSSEC=no'\'' /etc/systemd/resolved.conf'
 
-	echo "Adjust permissions on home directory /home/${CONTAINER_USER}"
+    echo "Adjust permissions on home directory /home/${CONTAINER_USER}"
     ${LXC} exec "${CONTAINER_NAME}" -- bash -c "chown -R ${CONTAINER_USER} /home/${CONTAINER_USER}"
 
+    get_container_uid_gid
     ${LXC} config set "${CONTAINER_NAME}" raw.idmap "$(echo -e "uid $(id -u) ${CONTAINER_UID}\ngid $(id -g) ${CONTAINER_GID}")"
 }
 
@@ -896,7 +907,7 @@ function setup_hosts {
     echo "${MY_IP_ADD_RESS} ${CONTAINER_NAME}" | sudo tee -a /etc/hosts
 }
 
-function lxc_luanch_failed {
+function lxc_launch_failed {
     echo "ERROR ${LXC} launch failed"
     exit 1
 }
@@ -905,8 +916,6 @@ function setup_lxc_container {
     echo "This will install the ${CONTAINER_NAME} container on your machine"
 
     setup_init_lxd
-
-    setup_subgid
 
     restart_lxd
 
@@ -926,11 +935,15 @@ function setup_lxc_container {
 
     IMAGE_SPEC="${IMAGE_REMOTE}:${CONTAINER_FLAVOURS[$CONTAINER_TYPE]}"
     echo "Pulling in container image from $IMAGE_SPEC ..."
-    ${LXC} launch "${IMAGE_SPEC}" "${CONTAINER_NAME}" --profile default --profile "${PROFILE_NAME}" --storage "${STORAGE_POOL_NAME}" --verbose $LXC_DEBUG_OPT < /dev/null || lxc_luanch_failed
+    ${LXC} launch "${IMAGE_SPEC}" "${CONTAINER_NAME}" --profile default --profile "${PROFILE_NAME}" \
+        --storage "${STORAGE_POOL_NAME}" --verbose $LXC_DEBUG_OPT < /dev/null || lxc_launch_failed
+
     echo "Pulling done, setup container ..."
     setup_container_ip
 
     echo "Container ${CONTAINER_NAME} operational. Remaining few last steps ..."
+
+    setup_subgid
 
     fix_container
 
@@ -953,7 +966,7 @@ function setup_lxc_container {
 }
 
 ##########
-# check_user
+check_user
 check_distribution
 
 case "${MAIN_CMD}" in
