@@ -912,6 +912,30 @@ function lxc_launch_failed {
     exit 1
 }
 
+function check_crossbuild {
+
+    doc_url="https://docs.redpesk.bzh/docs/en/master/redpesk-factory/local_builder/docs/4_advanced-installation.html#setup-your-host-for-local-crossbuild"
+    if ! ${LXC} exec "${CONTAINER_NAME}" -- bash -c "grep flags /proc/sys/fs/binfmt_misc/qemu-aarch64 | grep 'P'" ; then
+        if ! mount | grep -q 'binfmt_misc on' ; then
+            echo "Error: binfmt_misc is not enabled!"
+            echo "Please follow the Advanced Installation documentation:"
+            echo " $doc_url"
+            exit 1
+
+        elif ! grep "interpreter /usr/bin/qemu-aarch64-static" /proc/sys/fs/binfmt_misc/qemu-aarch64 ;then
+                echo "Your configuration seems to be bad or outdated"
+                echo "Please follow the Advanced Installation documentation:"
+                echo " $doc_url"
+        fi
+
+    else
+        echo "Error: the flag 'P' is not compatible for a working qemu-aarch64"
+        echo "Please follow the Advanced Installation documentation:"
+        echo " $doc_url"
+        exit 1
+    fi
+}
+
 function setup_lxc_container {
     echo "This will install the ${CONTAINER_NAME} container on your machine"
 
@@ -954,6 +978,8 @@ function setup_lxc_container {
     setup_port_redirections
 
     setup_kvm_device_mapping
+
+    check_crossbuild
 
     ${LXC} restart "${CONTAINER_NAME}"
 
