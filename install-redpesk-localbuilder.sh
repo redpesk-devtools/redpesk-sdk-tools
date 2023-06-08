@@ -35,6 +35,7 @@ function usage {
         -i|--container-image\t: image name of the container to use \n\
                                     (default for container-type 'localbuilder': ${CONTAINER_LB_IMAGE_DEFAULT})\n\
                                     (default for container-type 'cloud-publication': ${CONTAINER_CP_IMAGE_DEFAULT})\n\
+        -f|--container-file\t: Do not use image from pool but a local *.tar.gz image file\n\
         -s|--lxd-storage-pool\t: give a specific LXD storage pool to use (default: ${STORAGE_POOL_NAME_DEFAULT})\n\
         -r|--remote-name\t: LXD remote name to use (default: ${IMAGE_REMOTE})\n\
         -u|--remote-url\t\t: LXD remote URL to use (default: ${IMAGE_STORE})\n\
@@ -83,6 +84,8 @@ CONTAINER_NAME=""
 CONTAINER_TYPE=""
 CONTAINER_TYPE_DEFAULT="localbuilder"
 CONTAINER_IMAGE=""
+CONTAINER_FILE=""
+
 CONTAINER_LB_IMAGE_DEFAULT="redpesk-builder/arz-1.0-update"
 CONTAINER_CP_IMAGE_DEFAULT="redpesk-cloud-publication"
 CONTAINER_DM_IMAGE_DEFAULT="redpesk-demo"
@@ -121,6 +124,10 @@ while [[ $# -gt 0 ]];do
     ;;
     -i|--container-image)
         CONTAINER_IMAGE="$2";
+        shift 2;
+    ;;
+    -f|--container-file)
+        CONTAINER_FILE="$2";
         shift 2;
     ;;
     -s|--lxd-storage-pool)
@@ -254,16 +261,39 @@ function check_distribution {
     esac
 }
 
+
+function check_container_file {
+    if [ ! -z "${CONTAINER_FILE}" ]; then
+        #test if the file really exist
+        if [ ! -f "${CONTAINER_FILE}" ]; then
+            echo "ERROR: can't find file ${CONTAINER_FILE}"
+        fi
+        CONTAINER_ALIAS=$(basename "${CONTAINER_FILE}" | rev | cut -d"_" -f2- | rev)
+        IMAGE_REMOTE="local"
+
+        #Check if the image is already install
+        if lxc image list | grep -q "${CONTAINER_ALIAS}" ; then
+            lxc image delete "${CONTAINER_ALIAS}"
+        fi
+
+        ${LXC} image import "${CONTAINER_FILE}" --alias "${CONTAINER_ALIAS}"
+
+        CONTAINER_FLAVOURS[$CONTAINER_TYPE]="${CONTAINER_ALIAS}"
+
+    fi
+
+}
+
+
 function check_container_name_and_type {
     if [ -z "${CONTAINER_NAME}" ]; then
         echo -e "${RED}Error${NORMAL}: no container name given"
         echo -e "Please specify a container name (eg: 'redpesk-builder')"
         usage
-        exit 1
     fi
     RESULT=$(echo "${CONTAINER_NAME}" | grep -E '^[[:alnum:]][-[:alnum:]]{0,61}[[:alnum:]]$') || RESULT=""
     if [ -z "${RESULT}" ] ; then
-        echo -e "${RED}Error${NORMAL}: Invalid instance Name can only contain alphanumeric and hyphen characters"
+        echo -e "${RED}Error${NORMAL}: Invalid instance Name \"${RESULT}\" can only contain alphanumeric and hyphen characters"
         exit 1
     fi
 
@@ -668,8 +698,8 @@ function setup_init_lxd {
             zone=$(sudo firewall-cmd --get-zone-of-interface=lxdbr0)||zone=none
 
             if [ "${zone}" != "trusted" ]; then
-                sudo firewall-cmd --zone=trusted --change-interface=lxdbr0 --permanent
-                sudo firewall-cmd --reload
+                sudo firewall-cmd --zone=trusted --change-interface=lxdbr0 --permanent || echo "No firewall-cmd running"
+                sudo firewall-cmd --reload || echo "No firewall-cmd running"
             fi
         fi
         ;;
@@ -941,6 +971,7 @@ create)
     config_host
     check_lxc
     check_lxd
+    check_container_file
     check_container_name_and_type
     clean_lxc_container
     setup_lxc_container
