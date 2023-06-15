@@ -22,11 +22,13 @@ declare -A list_distro_name
 list_distro_name=(
 ["/fedora/36/"]="Fedora_36"
 ["/fedora/37/"]="Fedora_37"
+["/fedora/38/"]="Fedora_38"
 ["/debian/11/"]="Debian_11"
 ["/ubuntu/20.04/"]="xUbuntu_20.04"
 ["/ubuntu/22.04/"]="xUbuntu_22.04"
 ["/opensuse-leap/15.3/"]="openSUSE_Leap_15.3"
 ["/opensuse-leap/15.4/"]="openSUSE_Leap_15.4"
+["/opensuse-leap/15.5/"]="openSUSE_Leap_15.5"
 )
 
 RESULT_DST="/home/vagrant/ci/${ID}_${VERSION_ID}_${BRANCH}_xunit.xml"

@@ -5,8 +5,10 @@ declare -A listevagrant
 listevagrant=(["./debian/11/Vagrantfile"]="generic/debian11"
 ["./fedora/36/Vagrantfile"]="generic/fedora36"
 ["./fedora/37/Vagrantfile"]="generic/fedora37"
+["./fedora/38/Vagrantfile"]="fedora/38-cloud-base"
 ["./opensuse-leap/15.3/Vagrantfile"]="opensuse/Leap-15.3.x86_64"
 ["./opensuse-leap/15.4/Vagrantfile"]="opensuse/Leap-15.4.x86_64"
+["./opensuse-leap/15.5/Vagrantfile"]="alvistack/opensuse-leap-15.5"
 ["./ubuntu/20.04/Vagrantfile"]="generic/ubuntu2004"
 ["./ubuntu/22.04/Vagrantfile"]="generic/ubuntu2204"
 )

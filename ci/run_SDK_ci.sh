@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SUPPORTED_DISTROS="Ubuntu 20.04, Ubuntu 22.04, OpenSUSE Leap 15.3, OpenSUSE Leap 15.4, Fedora 36, Fedora 37, Debian 11"
+SUPPORTED_DISTROS="Ubuntu 20.04, Ubuntu 22.04, OpenSUSE Leap 15.3, OpenSUSE Leap 15.4, OpenSUSE Leap 15.5, Fedora 36, Fedora 37, Fedora 38, Debian 11"
 
 function usage {
     echo -e "Starts $SUPPORTED_DISTROS virtual machines, runs their configured provisionners and shuts them down\n
@@ -13,7 +13,7 @@ function usage {
 script_dir="$(dirname "$(readlink -f "$0")")"
 
 
-LISTPATH_DEFAULT="fedora/36/ fedora/37/ debian/11/ ubuntu/20.04/ ubuntu/22.04/ opensuse-leap/15.3/ opensuse-leap/15.4/"
+LISTPATH_DEFAULT="fedora/36/ fedora/37/ fedora/38/ debian/11/ ubuntu/20.04/ ubuntu/22.04/ opensuse-leap/15.3/ opensuse-leap/15.4/ opensuse-leap/15.5/"
 
 
 
