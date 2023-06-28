@@ -39,6 +39,7 @@ function usage {
         -r|--remote-name        : LXD remote name to use (default: ${IMAGE_REMOTE})\n\
         -u|--remote-url         : LXD remote URL to use (default: ${IMAGE_STORE})\n\
         -a|--non-interactive    : run the script in non-interactive mode\n\
+        -cr|--clean-remote      : remove the remote before new installation
         -h|--help               : displays this text\n"
     exit
 }
@@ -99,7 +100,7 @@ CONTAINER_FLAVOURS=( ["localbuilder"]="${CONTAINER_LB_IMAGE_DEFAULT}" \
 
 DEFAULT_CNTNR_DIR=${HOME}/my_rp_builder_dir
 INTERACTIVE="yes"
-CLEAN_REMOTE="yes"
+CLEAN_REMOTE="no"
 
 #The Ip of the container will be set after the "launch" of the container
 MY_IP_ADD_RESS=""
@@ -155,9 +156,9 @@ while [[ $# -gt 0 ]];do
 		shift;
 		CONTAINER_USER="$1";
 	;;
-    --no-clean-remote)
+    --clean-remote)
         # advanced usage (not documented)
-        CLEAN_REMOTE="no";
+        CLEAN_REMOTE="yes";
     ;;
     -h|--help)
         usage;
@@ -285,8 +286,8 @@ function check_container_file {
         IMAGE_REMOTE="local"
 
         #Check if the image is already install
-        if lxc image list | grep -q "${CONTAINER_ALIAS}" ; then
-            lxc image delete "${CONTAINER_ALIAS}"
+        if ${LXC} image list | grep -q "${CONTAINER_ALIAS}" ; then
+            ${LXC} image delete "${CONTAINER_ALIAS}"
         fi
 
         ${LXC} image import "${CONTAINER_FILE}" --alias "${CONTAINER_ALIAS}"
