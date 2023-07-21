@@ -757,7 +757,9 @@ function setup_ssh {
     ssh-keygen -q -f "${KNOWN_HOSTS_FILE}" -R "${CONTAINER_NAME}" 2> /dev/null
     ssh-keygen -q -f "${KNOWN_HOSTS_FILE}" -R "${MY_IP_ADD_RESS}" 2> /dev/null
     #Add new known host
-    ssh-keyscan -H "${CONTAINER_NAME}","${MY_IP_ADD_RESS}" >> "${KNOWN_HOSTS_FILE}" 2>/dev/null
+
+    ssh-keyscan -H "${CONTAINER_NAME}","${MY_IP_ADD_RESS}" >> "${KNOWN_HOSTS_FILE}" 2>/dev/null || { echo ERROR:The command \"ssh-keyscan -H "${CONTAINER_NAME}","${MY_IP_ADD_RESS}"\" failed!; exit 1; }
+
 }
 
 function GetDefaultDir () {
@@ -966,6 +968,8 @@ function setup_lxc_container {
     echo "Pulling done, setup container ..."
     setup_container_ip
 
+    setup_hosts
+
     echo "Container ${CONTAINER_NAME} operational. Remaining few last steps ..."
 
     setup_subgid
@@ -983,8 +987,6 @@ function setup_lxc_container {
     check_crossbuild
 
     ${LXC} restart "${CONTAINER_NAME}"
-
-    setup_hosts
 
     sync
     echo -e "Container ${BOLD}${CONTAINER_NAME}${NORMAL} (${MY_IP_ADD_RESS}) successfully created !"
