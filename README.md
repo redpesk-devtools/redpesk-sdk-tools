@@ -7,7 +7,7 @@ this container has all the things you need to perform cross-compilation
 for a redpesk embedded target. It can also install other flavours of supported
 containers.
 
-*install-redpesk-native.sh* installs the redpesk ApplicationFramework build environnement
+*install-redpesk-sdk.sh* installs the redpesk ApplicationFramework build environnement
 on your host (ie, the AFB binder, with the needed libraries and header files),
 for developers that feel more comfortable with developing in a native development.
 
