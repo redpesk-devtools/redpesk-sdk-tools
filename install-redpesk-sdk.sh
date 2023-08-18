@@ -418,6 +418,10 @@ almalinux)
 	8.*)
 		#Add redpesk repos
 		sudo dnf install -y dnf-plugins-core
+		#Add PowerTools needed for the lib-controller
+		if ! dnf repolist --enabled | grep -q "powertools"; then
+			sudo dnf config-manager --set-enabled powertools
+		fi
 
 		if [ "${WRITE_CONF}" == "yes" ]; then
 

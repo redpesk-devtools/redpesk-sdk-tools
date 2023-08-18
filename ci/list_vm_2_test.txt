@@ -1,3 +1,4 @@
+almalinux/8/
 fedora/36/
 fedora/37/
 fedora/38/

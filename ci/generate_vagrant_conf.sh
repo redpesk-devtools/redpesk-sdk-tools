@@ -2,7 +2,8 @@
 
 
 declare -A listevagrant
-listevagrant=(["./debian/11/Vagrantfile"]="generic/debian11"
+listevagrant=(["./almalinux/8/Vagrantfile"]="almalinux/8"
+["./debian/11/Vagrantfile"]="generic/debian11"
 ["./fedora/36/Vagrantfile"]="generic/fedora36"
 ["./fedora/37/Vagrantfile"]="generic/fedora37"
 ["./fedora/38/Vagrantfile"]="fedora/38-cloud-base"
@@ -13,7 +14,7 @@ listevagrant=(["./debian/11/Vagrantfile"]="generic/debian11"
 ["./ubuntu/22.04/Vagrantfile"]="generic/ubuntu2204"
 )
 
-rm -fr ubuntu opensuse-leap fedora debian
+rm -fr ubuntu opensuse-leap fedora debian almalinux
 
 for path in "${!listevagrant[@]}"; do
     directory="$(dirname "$path")"

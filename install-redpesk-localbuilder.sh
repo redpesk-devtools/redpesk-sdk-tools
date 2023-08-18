@@ -2,10 +2,8 @@
 ###########################################################################
 # Copyright (C) 2020-2023 IoT.bzh
 #
-# Authors:   Thierry Bultel <thierry.bultel@iot.bzh>
-#            Ronan Le Martret <ronan.lemartret@iot.bzh>
-#            Vincent Rubiolo <vincent.rubiolo@iot.bzh>
-#            Valentin Lefebvre <valentin.lefebvre@iot.bzh>
+# Authors:   Ronan Le Martret <ronan.lemartret@iot.bzh>
+#            Valentin Geffroy <valentin.geffroy@iot.bzh>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
