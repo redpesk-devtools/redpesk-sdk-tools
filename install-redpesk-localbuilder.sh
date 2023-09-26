@@ -84,7 +84,7 @@ CONTAINER_TYPE_DEFAULT="localbuilder"
 CONTAINER_IMAGE=""
 CONTAINER_FILE=""
 
-CONTAINER_LB_IMAGE_DEFAULT="redpesk-builder/arz-1.0-update"
+CONTAINER_LB_IMAGE_DEFAULT="redpesk-builder-devel/arz"
 CONTAINER_CP_IMAGE_DEFAULT="redpesk-cloud-publication"
 CONTAINER_DM_IMAGE_DEFAULT="redpesk-demo"
 CONTAINER_DB_IMAGE_DEFAULT="redpesk-demo-builder/arz"
