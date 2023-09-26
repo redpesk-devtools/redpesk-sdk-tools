@@ -916,7 +916,7 @@ function lxc_launch_failed {
 function check_crossbuild {
 
     doc_url="https://docs.redpesk.bzh/docs/en/master/redpesk-factory/local_builder/docs/4_advanced-installation.html#setup-your-host-for-local-crossbuild"
-    if ! ${LXC} exec "${CONTAINER_NAME}" -- bash -c "grep flags /proc/sys/fs/binfmt_misc/qemu-aarch64 | grep 'P'" ; then
+    if ! ${LXC} exec "${CONTAINER_NAME}" -- bash -c "grep flags /proc/sys/fs/binfmt_misc/qemu-aarch64 | grep '*P*'" ; then
         if ! mount | grep -q 'binfmt_misc on' ; then
             echo "Error: binfmt_misc is not enabled!"
             echo "Please follow the Advanced Installation documentation:"
