@@ -106,7 +106,7 @@ LXC=""
 LXD=""
 
 # Variable allowing to say if the system use apparmor or not
-USE_APPARMOR="no"
+IGNORE_APPARMOR="no"
 
 [[ "$LXC_DEBUG" == "1" ]] && LXC_DEBUG_OPT="--debug" || LXC_DEBUG_OPT=""
 
@@ -406,7 +406,7 @@ function config_host {
 
     case ${ID} in
     ubuntu|linuxmint|debian)
-        USE_APPARMOR="yes"
+        IGNORE_APPARMOR="yes"
         sudo apt-get update --yes
         if [ -z "${HAVE_JQ}" ];then
             echo "Installing jq"
@@ -456,7 +456,7 @@ function config_host {
         config_host_group
         ;;
     opensuse-leap)
-        USE_APPARMOR="yes"
+        IGNORE_APPARMOR="yes"
         sudo zypper ref
         if [ -z "${HAVE_JQ}" ];then
             echo "Installing jq"
@@ -672,7 +672,7 @@ function setup_profile {
         ${LXC} profile create "${PROFILE_NAME}"
 		${LXC} profile set "${PROFILE_NAME}" security.privileged true
 		${LXC} profile set "${PROFILE_NAME}" security.nesting true
-        if [ "${USE_APPARMOR}" == "yes" ]; then
+        if [ "${IGNORE_APPARMOR}" == "yes" ]; then
             ${LXC} profile set "${PROFILE_NAME}" raw.lxc lxc.apparmor.profile=unconfined
         fi
 		${LXC} profile set "${PROFILE_NAME}" security.syscalls.blacklist "keyctl errno 38\nkeyctl_chown errno 38"
