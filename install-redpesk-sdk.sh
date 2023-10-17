@@ -37,8 +37,14 @@ SPIKPACKINST="no"
 INTERACTIVE="yes"
 INSTALL_RECOMMENDED_PKG="yes"
 
-LIST_PACKAGE_DEB="afb-binder afb-binding-dev afb-libhelpers-dev afb-cmake-modules afb-libcontroller-dev afb-ui-devtools afb-test-bin afb-client"
-LIST_PACKAGE_RPM="afb-binder afb-binding-devel afb-libhelpers-devel afb-cmake-modules afb-libcontroller-devel afb-ui-devtools afb-test afb-client"
+LIST_PACKAGE_AFB_DEB="afb-binder afb-binding-dev afb-libhelpers-dev afb-cmake-modules afb-libcontroller-dev afb-ui-devtools afb-test-bin afb-client"
+LIST_PACKAGE_AFB_RPM="afb-binder afb-binding-devel afb-libhelpers-devel afb-cmake-modules afb-libcontroller-devel afb-ui-devtools afb-test afb-client"
+
+LIST_PACKAGE_RPCLI_DEB="redpesk-cli"
+LIST_PACKAGE_RPCLI_RPM="redpesk-cli"
+
+LIST_PACKAGE_DEB="$LIST_PACKAGE_AFB_DEB $LIST_PACKAGE_RPCLI_DEB"
+LIST_PACKAGE_RPM="$LIST_PACKAGE_AFB_RPM $LIST_PACKAGE_RPCLI_RPM"
 
 # redmine #4550: execute sudo with user environment set (example: http_proxy)
 function sudo { command sudo -E "$@"; }
@@ -46,11 +52,12 @@ function sudo { command sudo -E "$@"; }
 function help {
 	echo -e "Supported distributions : $SUPPORTED_DISTROS
             -c | --rp-cli:                 install rp-cli only
+            -k | --sdk:                    install sdk only
             -r | --repository:             redpesk sdk repository path
             -o | --osversion:              set the redpesk version value, default:${REDPESK_OS_VERSION_DEFAULT}
             -i | --cirepository:           redpesk ci repository path
             -h | --help:                   display help
-            -s | --skip-packages-install
+            -s | --skip-packages-install   only declare repositories but don't install any packages
             -a | --non-interactive
             -n | --no-recommends"
 	exit
@@ -66,15 +73,19 @@ while [[ $# -gt 0 ]]; do
 	OPTION="$1"
 	case $OPTION in
 	-c | --rp-cli)
-		# Overwrite list to install
-		LIST_PACKAGE_DEB="redpesk-cli"
-		LIST_PACKAGE_RPM="redpesk-cli"
-		shift
+		# install only rpcli
+		LIST_PACKAGE_DEB="$LIST_PACKAGE_RPCLI_DEB"
+		LIST_PACKAGE_RPM="$LIST_PACKAGE_RPCLI_RPM"
+		;;
+    -k | --sdk)
+        # install only sdk
+        LIST_PACKAGE_DEB="$LIST_PACKAGE_AFB_DEB"
+		LIST_PACKAGE_RPM="$LIST_PACKAGE_AFB_RPM"
 		;;
 	-i | --cirepository)
 		if [[ -n $2 ]]; then
 			REDPESK_CI_REPO="$REDPESK_CI_REPO $2"
-			shift 2
+			shift
 		else
 			printf "command error: a repository was expected\n-r <repository>\n"
 			exit
@@ -83,7 +94,7 @@ while [[ $# -gt 0 ]]; do
 	-r | --repository)
 		if [[ -n $2 ]]; then
 			REDPESK_REPO="$REDPESK_REPO $2"
-			shift 2
+			shift
 		else
 			printf "command error: a repository was expected\n-r <repository>\n"
 			exit
@@ -92,7 +103,7 @@ while [[ $# -gt 0 ]]; do
 	-o | --osversion)
 		if [[ -n $2 ]]; then
 			REDPESK_OS_VERSION="$2"
-			shift 2
+			shift
 		else
 			printf "command error: a repository was expected\n-r <repository>\n"
 			exit
@@ -103,15 +114,12 @@ while [[ $# -gt 0 ]]; do
 		;;
 	-s | --skip-packages-install)
 		SPIKPACKINST="yes"
-		shift
 		;;
 	-a | --non-interactive)
 		INTERACTIVE="no"
-		shift
 		;;
 	-n | --no-recommends)
 		INSTALL_RECOMMENDED_PKG="no"
-		shift
 		;;
 	*)
 		printf " Unknown command\n
@@ -119,6 +127,7 @@ while [[ $# -gt 0 ]]; do
 		exit
 		;;
 	esac
+    shift
 done
 
 if [ -z "${REDPESK_OS_VERSION}" ]; then

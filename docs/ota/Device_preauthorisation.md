@@ -1,13 +1,13 @@
-# Preauthorizing devices on Mender server
+# Pre-authorizing devices on Mender server
 
 ## Generate a key pair for device pre-authorization
 
-To initiate the preauthorization process for a device, we require two crucial pieces of information from the device:
+To initiate the pre-authorization process for a device, we require two crucial pieces of information from the device:
 
     1. The device's identity, which includes its MAC address and device type.
     2. The device's public key.
 
-To ensure the security and randomness of the keys, we will generate them on a separate system, not on the device itself. 
+To ensure the security and randomness of the keys, we will generate them on a separate system, not on the device itself.
 Once generated, these keys will be placed into the device's storage. This approach enables us to maintain records of the device's public key and guarantees a satisfactory level of entropy during key creation, thereby producing highly secure and random keys.
 
 For the generation of a keypair that is comprehensible to the Mender client running on the target, we will employ a script. This script utilizes the "openssl" command to produce the keys. To acquire the script, download it to a designated directory using the following command:
@@ -37,16 +37,16 @@ output_directory
     └── public.key
 ```
 
-## Device Preauthorization
+## Device Pre-authorization
 
-Now that we possess both the device's identity and its public key, we will utilize the Redpesk UI to preauthorize the device.
+Now that we possess both the device's identity and its public key, we will utilize the Redpesk UI to pre-authorize the device.
 
 ## Transferring the Generated Device Key to Your Device
 
-Following the key generation and preauthorization, the subsequent task is to move the newly created private key to your device. This private key should be placed in its default destination at /var/lib/mender/mender-agent.pem.
+Following the key generation and pre-authorization, the subsequent task is to move the newly created private key to your device. This private key should be placed in its default destination at /var/lib/mender/mender-agent.pem.
 
 
-**Important to note** : 
+**Important to note** :
 
     * Prior installation of the mender-client on your device is assumed.
     * Ensure that the mender-client is not already running on your device.
