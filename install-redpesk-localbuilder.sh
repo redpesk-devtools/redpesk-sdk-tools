@@ -38,6 +38,8 @@ function usage {
         -u|--remote-url         : LXD remote URL to use (default: ${IMAGE_STORE})\n\
         -a|--non-interactive    : run the script in non-interactive mode\n\
         -cr|--clean-remote      : remove the remote before new installation
+        --force-distro          : [Advanced] force the distribution instead of detecting it
+        --force-version         : [Advanced] force the distribution version instead of detecting it
         -h|--help               : displays this text\n"
     exit
 }
@@ -160,6 +162,18 @@ while [[ $# -gt 0 ]];do
     --clean-remote)
         # advanced usage (not documented)
         CLEAN_REMOTE="yes";
+    ;;
+    --force-distro)
+        # Advanced usage: force the distribution
+        # This code overwrite the ID variable defined in /etc/os-release
+        shift;
+        ID="$1";
+    ;;
+    --force-version)
+        # Advanced usage: force the distribution version
+        # This code overwrite the VERSION_ID variable defined in /etc/os-release
+        shift;
+        VERSION_ID="$1";
     ;;
     -h|--help)
         usage;
