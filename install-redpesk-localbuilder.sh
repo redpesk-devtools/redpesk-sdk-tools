@@ -322,7 +322,7 @@ function check_container_name_and_type {
     fi
     RESULT=$(echo "${CONTAINER_NAME}" | grep -E '^[[:alnum:]][-[:alnum:]]{0,61}[[:alnum:]]$') || RESULT=""
     if [ -z "${RESULT}" ] ; then
-        echo -e "${RED}Error${NORMAL}: Invalid instance Name \"${RESULT}\" can only contain alphanumeric and hyphen characters"
+        echo -e "${RED}Error${NORMAL}: invalid container name \"${CONTAINER_NAME}\", only alphanumeric and hyphen characters are allowed"
         exit 1
     fi
 
