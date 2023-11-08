@@ -198,10 +198,6 @@ if [ -n "${CONTAINER_IMAGE}" ]; then
     CONTAINER_FLAVOURS[$CONTAINER_TYPE]="${CONTAINER_IMAGE}"
 fi
 
-function get_os_var_version_id() {
-    grep ^VERSION_ID= /etc/os-release || grep ^DISTRIB_RELEASE= /etc/lsb-release
-}
-
 function error() {
     echo "FAIL: $*" >&2
 }
