@@ -1,7 +1,6 @@
 almalinux/8/
-fedora/36/
-fedora/37/
 fedora/38/
+fedora/39/
 debian/11/
 ubuntu/20.04/
 ubuntu/22.04/

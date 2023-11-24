@@ -45,7 +45,7 @@ DEBUG="NO"
 script_dir="$(dirname "$(readlink -f "$0")")"
 LOG_DIR="${script_dir}/ci_log/$(date +%Y-%m-%d_%H-%M)"
 
-LISTPATH_DEFAULT="fedora/36 fedora/37 fedora/38 debian/11 ubuntu/20.04 ubuntu/22.04 opensuse-leap/15.3 opensuse-leap/15.4 opensuse-leap/15.5"
+LISTPATH_DEFAULT="fedora/38 fedora/39 debian/11 ubuntu/20.04 ubuntu/22.04 opensuse-leap/15.3 opensuse-leap/15.4 opensuse-leap/15.5"
 LISTPATH=""
 
 while [[ $# -gt 0 ]];do
