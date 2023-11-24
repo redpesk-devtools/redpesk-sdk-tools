@@ -8,16 +8,6 @@ pipeline {
     stages {
         stage('Test SDK') {
             parallel { 
-                stage("Test SDK master") {
-                    steps {
-                        build( job: "JF-redpesk-sdk-tools-SDK-CI-release-master")
-                    }
-                }
-                stage("Test SDK next") {
-                    steps {
-                        build( job: "JF-redpesk-sdk-tools-SDK-CI-release-next")
-                    }
-                }
                 stage("Test SDK 1.1-update") {
                     steps {
                         build( job: "JF-redpesk-sdk-tools-SDK-CI-release-1.1-update")
