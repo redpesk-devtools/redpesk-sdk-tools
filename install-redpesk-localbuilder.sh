@@ -894,7 +894,7 @@ function setup_container_ip {
         break;
     done
     if [ "${COUNTER}" -ge "${COUNTER_MAX}" ]; then
-        echo "Error: setup_container_ip failed.";
+        echo "Error: setup_container_ip failed. Please check your LXC/LXD installation, your network or firewall configuration!";
         exit 1;
     fi
 }
