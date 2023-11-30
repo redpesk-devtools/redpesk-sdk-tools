@@ -342,8 +342,12 @@ function clean_subxid {
     echo "cleaning your /etc/subuid /etc/subgid files"
 
     get_container_uid_gid
-    sudo sed -i -e "/^${USER}:${CONTAINER_UID}:1/d" -e "/^root:100000:65536/d" -e "/^root:${CONTAINER_UID}:1/d" /etc/subuid
-    sudo sed -i -e "/^${USER}:${CONTAINER_GID}:1/d" -e "/^root:100000:65536/d" -e "/^root:${CONTAINER_GID}:1/d" /etc/subgid
+    if [[ "$CONTAINER_UID" != "" ]] ; then
+        sudo sed -i -e "/^${USER}:${CONTAINER_UID}:1/d" -e "/^root:100000:65536/d" -e "/^root:${CONTAINER_UID}:1/d" /etc/subuid
+    fi
+    if [[ "$CONTAINER_GID" != "" ]] ; then
+        sudo sed -i -e "/^${USER}:${CONTAINER_GID}:1/d" -e "/^root:100000:65536/d" -e "/^root:${CONTAINER_GID}:1/d" /etc/subgid
+    fi
 }
 
 function clean_hosts {
@@ -564,16 +568,19 @@ function restart_lxd {
 
 function get_container_uid_gid {
     set +e
-    state=$(${LXC} ls -c ns -f csv |grep "${CONTAINER_NAME}" |cut -d, -f2)
+    state=$(${LXC} ls -c ns -f csv |grep -e "^${CONTAINER_NAME}," |cut -d, -f2)
     set -e
     if [[ "$state" == "STOPPED" ]] ; then
         ${LXC} start "${CONTAINER_NAME}"
         sleep 1
-        state=$(${LXC} ls -c ns -f csv |grep "${CONTAINER_NAME}" |cut -d, -f2)
+        state=$(${LXC} ls -c ns -f csv |grep -e "^${CONTAINER_NAME}," |cut -d, -f2)
     fi
     if [[ "$state" == "RUNNING" ]] ; then
         CONTAINER_UID=$(${LXC} exec "${CONTAINER_NAME}" -- su devel -c 'id -u')
         CONTAINER_GID=$(${LXC} exec "${CONTAINER_NAME}" -- su devel -c 'id -g')
+    else
+        CONTAINER_UID=""
+        CONTAINER_GID=""
     fi
 }
 
@@ -592,8 +599,10 @@ function setup_subgid {
 
     sudo echo "root:100000:65536" | sudo tee -a /etc/subuid /etc/subgid > /dev/null
 
-    sudo echo "root:${CONTAINER_UID}:1" | sudo tee -a /etc/subuid > /dev/null
-    sudo echo "root:${CONTAINER_GID}:1" | sudo tee -a /etc/subgid > /dev/null
+    if [[ "$CONTAINER_UID" != "" ]] && [[ "$CONTAINER_GID" != "" ]]; then
+        sudo echo "root:${CONTAINER_UID}:1" | sudo tee -a /etc/subuid > /dev/null
+        sudo echo "root:${CONTAINER_GID}:1" | sudo tee -a /etc/subgid > /dev/null
+    fi
 }
 
 function setup_remote {
@@ -913,7 +922,12 @@ function fix_container {
     ${LXC} exec "${CONTAINER_NAME}" -- bash -c "chown -R ${CONTAINER_USER} /home/${CONTAINER_USER}"
 
     get_container_uid_gid
-    ${LXC} config set "${CONTAINER_NAME}" raw.idmap "$(echo -e "uid $(id -u) ${CONTAINER_UID}\ngid $(id -g) ${CONTAINER_GID}")"
+    if [[ "$CONTAINER_UID" == "" ]] || [[ "$CONTAINER_GID" == "" ]]; then
+        echo "Error on UID/GID, cannot retrieve the container UID/GID!\n Your container is not totally setup, you may have some UID/GID remapping issues."
+        read "Press any key to continue"
+    else
+        ${LXC} config set "${CONTAINER_NAME}" raw.idmap "$(echo -e "uid $(id -u) ${CONTAINER_UID}\ngid $(id -g) ${CONTAINER_GID}")"
+    fi
 }
 
 function setup_hosts {
