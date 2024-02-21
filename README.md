@@ -46,8 +46,25 @@ To set the environnement to compile for aarch64, do:
 . /usr/aarch64-linux-gnu/bin/cross-profile-setup-aarch64.sh
 ```
 
-## Using alternate remotes
+## Troubleshooting
 
-It is possible to target other remotes than the internal IoT.bzh one by using
-the `--remote-name` and `--remote-url` parameters. This can be useful to deploy
-containers from private LXD remotes for development purposes.
+*Error: TLS certificate*
+
+In case of you encounter follow error message :\
+`Error: get "https://download.redpesk.bzh:8443/1.0": tls: failed to verify certificate:x509: certificate has expired or is not yet valid`
+
+Just relaunch installation script with `--clean-remote` option :
+
+```bash
+# launch the script
+./install-redpesk-localbuilder.sh create -c ${container_name} --clean-remote
+```
+
+## Cleans things up
+
+If you want to deletes container and cleans things up, use `clean` action:
+
+```sh
+./install-redpesk-localbuilder.sh clean -c ${container_name}
+```
+
