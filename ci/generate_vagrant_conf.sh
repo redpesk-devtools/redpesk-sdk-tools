@@ -2,11 +2,12 @@
 
 
 declare -A listevagrant
-listevagrant=(["./almalinux/8/Vagrantfile"]="almalinux/8"
+listevagrant=(
+["./almalinux/8/Vagrantfile"]="almalinux/8"
+["./almalinux/9/Vagrantfile"]="almalinux/9"
 ["./debian/11/Vagrantfile"]="generic/debian11"
 ["./fedora/38/Vagrantfile"]="fedora/38-cloud-base"
 ["./fedora/39/Vagrantfile"]="fedora/39-cloud-base"
-["./opensuse-leap/15.3/Vagrantfile"]="opensuse/Leap-15.3.x86_64"
 ["./opensuse-leap/15.4/Vagrantfile"]="opensuse/Leap-15.4.x86_64"
 ["./opensuse-leap/15.5/Vagrantfile"]="alvistack/opensuse-leap-15.5"
 ["./ubuntu/20.04/Vagrantfile"]="generic/ubuntu2004"

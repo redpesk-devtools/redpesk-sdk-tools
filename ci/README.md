@@ -25,7 +25,6 @@ OS=ubuntu_22.04
 
 OS=debian_11
 
-OS=opensuse_15.3
 OS=opensuse_15.4
 OS=opensuse_15.5
 

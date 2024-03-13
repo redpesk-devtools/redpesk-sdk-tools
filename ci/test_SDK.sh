@@ -21,12 +21,12 @@ done
 declare -A list_distro_name
 list_distro_name=(
 ["/almalinux/8/"]="AlmaLinux_8"
+["/almalinux/9/"]="AlmaLinux_9"
 ["/fedora/38/"]="Fedora_38"
 ["/fedora/39/"]="Fedora_39"
 ["/debian/11/"]="Debian_11"
 ["/ubuntu/20.04/"]="xUbuntu_20.04"
 ["/ubuntu/22.04/"]="xUbuntu_22.04"
-["/opensuse-leap/15.3/"]="openSUSE_Leap_15.3"
 ["/opensuse-leap/15.4/"]="openSUSE_Leap_15.4"
 ["/opensuse-leap/15.5/"]="openSUSE_Leap_15.5"
 )
@@ -96,7 +96,7 @@ sdktest () {
                 test "error" "test_helloworld_binding" "$line"
             fi
         ;;
-        fedora)
+        fedora| almalinux)
             (( line=LINENO + 1 ))
             if sudo dnf install -y --nogpgcheck helloworld-binding helloworld-binding-test; then
                 test "success" "test_helloworld_binding" "$line"
@@ -159,6 +159,9 @@ case ${ID} in
         ;;
     debian)
         sudo sed -i '3inameserver 10.16.2.10\ ' /etc/resolv.conf
+        ;;
+    almalinux)
+        VERSION_ID=$(echo ${VERSION_ID} | cut -d"." -f1)
         ;;
 esac
 echo -e '<?xml version="1.0" encoding="UTF-8"?>\n<testsuites>\n<testsuite>' > "${RESULT_DST}"

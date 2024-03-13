@@ -22,7 +22,7 @@
 shopt -s extglob
 source /etc/os-release
 
-SUPPORTED_DISTROS="AlmaLinux 8, Fedora 38/39, Linux Mint 21.1, OpenSUSE Leap 15.3/15.4/15.5, Ubuntu 20.04/22.04"
+SUPPORTED_DISTROS="AlmaLinux 8/9, Fedora 38/39, Linux Mint 21.1, OpenSUSE Leap 15.4/15.5, Ubuntu 20.04/22.04"
 
 #REDPESK_REPO can be given in command line, if so REDPESK_REPO must be the full path for the distro used.
 
@@ -208,7 +208,7 @@ function get_obs_distro_name {
 		;;
 	opensuse-leap)
 		case $VERSION_ID in
-		15.3 | 15.4 | 15.5)
+		15.4 | 15.5)
 			echo "openSUSE_Leap_${VERSION_ID}"
 			;;
 		*)
@@ -240,6 +240,9 @@ function get_obs_distro_name {
 		case $VERSION_ID in
 		8.*)
 			echo "AlmaLinux_8"
+			;;
+		9.*)
+			echo "AlmaLinux_9"
 			;;
 		*)
 			error_message
@@ -323,7 +326,7 @@ ubuntu)
 	;;
 opensuse-leap)
 	case $VERSION_ID in
-	15.3 | 15.4 | 15.5)
+	15.4 | 15.5)
 		# Manage the "no recommended option" variable
 		no_recommend_opt=""
 		if [ "${INSTALL_RECOMMENDED_PKG}" == "no" ]; then
@@ -424,13 +427,22 @@ EOF
 	;;
 almalinux)
 	case $VERSION_ID in
-	8.*)
+	8.*|9.*)
 		#Add redpesk repos
 		sudo dnf install -y dnf-plugins-core
 		#Add PowerTools needed for the lib-controller
-		if ! dnf repolist --enabled | grep -q "powertools"; then
-			sudo dnf config-manager --set-enabled powertools
-		fi
+		case $VERSION_ID in
+			8.*)
+				if ! dnf repolist --enabled | grep -q "powertools"; then
+					sudo dnf config-manager --set-enabled powertools
+				fi
+				;;
+			9.*)
+				if ! dnf repolist --enabled | grep -q "powertools"; then
+					sudo dnf config-manager --set-enabled crb
+				fi
+				;;
+		esac
 
 		if [ "${WRITE_CONF}" == "yes" ]; then
 
