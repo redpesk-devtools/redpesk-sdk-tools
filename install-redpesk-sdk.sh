@@ -22,7 +22,7 @@
 shopt -s extglob
 source /etc/os-release
 
-SUPPORTED_DISTROS="AlmaLinux 8, Fedora 38/39, Linux Mint 21.1, OpenSUSE Leap 15.3/15.4/15.5, Ubuntu 20.04/22.04"
+SUPPORTED_DISTROS="AlmaLinux 8, Fedora 38/39, Linux Mint 21.1/21.2/21.3, OpenSUSE Leap 15.3/15.4/15.5, Ubuntu 20.04/22.04"
 
 #REDPESK_REPO can be given in command line, if so REDPESK_REPO must be the full path for the distro used.
 
@@ -248,7 +248,7 @@ function get_obs_distro_name {
 		;;
 	linuxmint)
 		case $VERSION_ID in
-		21.1)
+		21.1 | 21.2 | 21.3)
 			echo "xUbuntu_22.04"
 			;;
 		*)
@@ -529,7 +529,7 @@ debian)
 	;;
 linuxmint)
 	case $VERSION_ID in
-	21.1)
+	21.1 | 21.2 | 21.3)
 		#Add redpesk repos (ca-certificates is here to fix VM CI test)
 		sudo apt-get update --yes
 		sudo apt-get install -y curl wget add-apt-key gnupg ca-certificates
