@@ -13,9 +13,18 @@ function usage {
 script_dir="$(dirname "$(readlink -f "$0")")"
 
 
-LISTPATH_DEFAULT="fedora/38/ fedora/39/ debian/11/ ubuntu/20.04/ ubuntu/22.04/ opensuse-leap/15.4/ opensuse-leap/15.5/ almalinux/8/ almalinux/9/"
-
-
+LISTPATH_DEFAULT=" \
+                    almalinux/8/ \
+                    almalinux/9/ \
+                    fedora/38/ \
+                    fedora/39/ \
+                    debian/11/ \
+                    ubuntu/20.04/ \
+                    ubuntu/22.04/ \
+                    linuxmint/v21/ \
+                    opensuse-leap/15.4/ \
+                    opensuse-leap/15.5/ \
+                    "
 
 LISTPATH=""
 DESTROY_AFTER="n"
