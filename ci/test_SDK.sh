@@ -27,6 +27,7 @@ list_distro_name=(
 ["/debian/11/"]="Debian_11"
 ["/ubuntu/20.04/"]="xUbuntu_20.04"
 ["/ubuntu/22.04/"]="xUbuntu_22.04"
+["/linuxmint/21/"]="xUbuntu_22.04"
 ["/opensuse-leap/15.4/"]="openSUSE_Leap_15.4"
 ["/opensuse-leap/15.5/"]="openSUSE_Leap_15.5"
 )
@@ -80,7 +81,7 @@ sdktest () {
     fi
     #install helloword-binding and helloword-binding-test
     case ${ID} in
-        ubuntu | debian)
+        ubuntu | debian | linuxmint)
             (( line=LINENO + 1 ))
             if sudo apt-get install helloworld-binding-bin helloworld-binding-test ;then
                 test "success" "test_helloworld_binding" "$line"
