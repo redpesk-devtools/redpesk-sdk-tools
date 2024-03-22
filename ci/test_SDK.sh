@@ -27,7 +27,7 @@ list_distro_name=(
 ["/debian/11/"]="Debian_11"
 ["/ubuntu/20.04/"]="xUbuntu_20.04"
 ["/ubuntu/22.04/"]="xUbuntu_22.04"
-["/linuxmint/21/"]="xUbuntu_22.04"
+["/linuxmint/21.3/"]="xUbuntu_22.04"
 ["/opensuse-leap/15.4/"]="openSUSE_Leap_15.4"
 ["/opensuse-leap/15.5/"]="openSUSE_Leap_15.5"
 )
@@ -155,7 +155,7 @@ sdktest () {
 echo "distribution: $PRETTY_NAME"
 #detect the OS and launch the sdktest function
 case ${ID} in
-    ubuntu)
+    ubuntu | linuxmint)
         sudo sed -i '17inameserver 10.16.2.10\ ' /etc/resolv.conf
         ;;
     debian)

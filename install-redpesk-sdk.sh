@@ -251,7 +251,7 @@ function get_obs_distro_name {
 		;;
 	linuxmint)
 		case $VERSION_ID in
-		21.1| 21)
+		21| 21.1| 21.2| 21.3)
 			echo "xUbuntu_22.04"
 			;;
 		*)
@@ -541,7 +541,7 @@ debian)
 	;;
 linuxmint)
 	case $VERSION_ID in
-	21.1|21)
+	21| 21.1| 21.2| 21.3)
 		#Add redpesk repos (ca-certificates is here to fix VM CI test)
 		sudo apt-get update --yes
 		sudo apt-get install -y curl wget add-apt-key gnupg ca-certificates
