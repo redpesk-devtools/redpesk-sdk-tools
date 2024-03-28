@@ -27,7 +27,7 @@ pipeline {
                         for (String os_path : os_paths.split(" ")) {
                             def local_os_path = os_path
                             //tests_by_os["Test SDK ${os_path}"] = {
-                                        stage("Test SDK ${local_os_path}") {
+                                        stage("Test Local builder ${local_os_path}") {
                                             sh """
                                             cd ci
                                             ./run_localbuilder_ci.sh --clean --vm-path ${local_os_path} --destroy
