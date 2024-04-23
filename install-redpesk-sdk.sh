@@ -22,7 +22,7 @@
 shopt -s extglob
 source /etc/os-release
 
-SUPPORTED_DISTROS="AlmaLinux 8/9, Fedora 38/39, Linux Mint 21.1, OpenSUSE Leap 15.4/15.5, Ubuntu 20.04/22.04"
+SUPPORTED_DISTROS="AlmaLinux 8/9, Fedora 38/39, Linux Mint 21.1/21.2/21.3, OpenSUSE Leap 15.4/15.5, Ubuntu 20.04/22.04"
 
 #REDPESK_REPO can be given in command line, if so REDPESK_REPO must be the full path for the distro used.
 
