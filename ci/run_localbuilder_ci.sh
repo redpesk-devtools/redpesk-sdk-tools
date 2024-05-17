@@ -51,8 +51,8 @@ LISTPATH_DEFAULT=" \
                     fedora/38/ \
                     fedora/39/ \
                     debian/11/ \
-                    ubuntu/20.04/ \
                     ubuntu/22.04/ \
+                    ubuntu/24.04/ \
                     linuxmint/v21/ \
                     opensuse-leap/15.4/ \
                     opensuse-leap/15.5/ \

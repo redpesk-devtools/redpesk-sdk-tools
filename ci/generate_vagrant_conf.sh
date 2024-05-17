@@ -10,8 +10,8 @@ listevagrant=(
 ["./fedora/39/Vagrantfile"]="fedora/39-cloud-base"
 ["./opensuse-leap/15.4/Vagrantfile"]="opensuse/Leap-15.4.x86_64"
 ["./opensuse-leap/15.5/Vagrantfile"]="alvistack/opensuse-leap-15.5"
-["./ubuntu/20.04/Vagrantfile"]="generic/ubuntu2004"
 ["./ubuntu/22.04/Vagrantfile"]="generic/ubuntu2204"
+["./ubuntu/24.04/Vagrantfile"]="generic/ubuntu2404"
 )
 
 rm -fr ubuntu opensuse-leap fedora debian almalinux

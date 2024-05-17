@@ -20,8 +20,8 @@ This setup has been tested with Vagrant 2.2.14 and VirtualBox 6.1.16 on Fedora
 ### Select your OS
 
 ```bash
-OS=ubuntu_20.04
 OS=ubuntu_22.04
+OS=ubuntu_24.04
 
 OS=debian_11
 

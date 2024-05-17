@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SUPPORTED_DISTROS="Ubuntu 20.04, Ubuntu 22.04, OpenSUSE Leap 15.4, OpenSUSE Leap 15.5, Fedora 38, Fedora 39, Debian 11, AlmaLinux 8"
+SUPPORTED_DISTROS="Ubuntu 22.04, Ubuntu 24.04, OpenSUSE Leap 15.4, OpenSUSE Leap 15.5, Fedora 38, Fedora 39, Debian 11, AlmaLinux 8"
 
 function usage {
     echo -e "Starts $SUPPORTED_DISTROS virtual machines, runs their configured provisionners and shuts them down\n
@@ -19,8 +19,8 @@ LISTPATH_DEFAULT=" \
                     fedora/38/ \
                     fedora/39/ \
                     debian/11/ \
-                    ubuntu/20.04/ \
                     ubuntu/22.04/ \
+                    ubuntu/24.04/ \
                     linuxmint/v21/ \
                     opensuse-leap/15.4/ \
                     opensuse-leap/15.5/ \
