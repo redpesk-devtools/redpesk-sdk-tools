@@ -16,8 +16,8 @@ script_dir="$(dirname "$(readlink -f "$0")")"
 LISTPATH_DEFAULT=" \
                     almalinux/8/ \
                     almalinux/9/ \
-                    fedora/38/ \
                     fedora/39/ \
+                    fedora/40/ \
                     debian/11/ \
                     ubuntu/22.04/ \
                     ubuntu/24.04/ \
