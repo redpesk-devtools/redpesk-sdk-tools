@@ -339,7 +339,7 @@ opensuse-leap)
 
 		if [ "${WRITE_CONF}" == "yes" ]; then
 			for repo in ${REDPESK_REPO}; do
-				sudo zypper rr "redpesk-sdk-${ID_REPO}"
+				sudo zypper lr | grep -q "redpesk-sdk-${ID_REPO}" && sudo zypper rr "redpesk-sdk-${ID_REPO}"
 				sudo zypper ar -f "${repo}" "redpesk-sdk-${ID_REPO}"
 				sudo zypper --non-interactive --gpg-auto-import-keys ref
 				sudo zypper --non-interactive dup --from "redpesk-sdk-${ID_REPO}"
