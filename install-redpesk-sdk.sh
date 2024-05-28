@@ -26,7 +26,7 @@ SUPPORTED_DISTROS="AlmaLinux 8/9, Fedora 39/40, Linux Mint 21.1/21.2/21.3, OpenS
 
 #REDPESK_REPO can be given in command line, if so REDPESK_REPO must be the full path for the distro used.
 
-REDPESK_OS_VERSION_DEFAULT="arz-1.1-update"
+REDPESK_OS_VERSION_DEFAULT="batz-2.0-update"
 
 REDPESK_OS_VERSION=""
 
