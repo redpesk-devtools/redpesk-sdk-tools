@@ -22,7 +22,7 @@
 shopt -s extglob
 source /etc/os-release
 
-SUPPORTED_DISTROS="AlmaLinux 8/9, Fedora 39/40, Linux Mint 21/21.1/21.2/21.3/22, OpenSUSE Leap 15.4/15.5, Ubuntu 22.04/24.04"
+SUPPORTED_DISTROS="AlmaLinux 8/9, Fedora 39/40, Linux Mint 21/21.1/21.2/21.3/22, OpenSUSE Leap 15.6/15.5, Ubuntu 22.04/24.04"
 
 #REDPESK_REPO can be given in command line, if so REDPESK_REPO must be the full path for the distro used.
 
@@ -208,7 +208,7 @@ function get_obs_distro_name {
 		;;
 	opensuse-leap)
 		case $VERSION_ID in
-		15.4 | 15.5)
+		15.6 | 15.5)
 			echo "openSUSE_Leap_${VERSION_ID}"
 			;;
 		*)
@@ -329,7 +329,7 @@ ubuntu)
 	;;
 opensuse-leap)
 	case $VERSION_ID in
-	15.4 | 15.5)
+	15.6 | 15.5)
 		# Manage the "no recommended option" variable
 		no_recommend_opt=""
 		if [ "${INSTALL_RECOMMENDED_PKG}" == "no" ]; then

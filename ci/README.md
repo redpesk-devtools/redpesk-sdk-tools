@@ -25,7 +25,7 @@ OS=ubuntu_24.04
 
 OS=debian_11
 
-OS=opensuse_15.4
+OS=opensuse_15.6
 OS=opensuse_15.5
 
 OS=fedora_39

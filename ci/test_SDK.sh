@@ -28,7 +28,7 @@ list_distro_name=(
 ["/ubuntu/22.04/"]="xUbuntu_22.04"
 ["/ubuntu/24.04/"]="xUbuntu_24.04"
 ["/linuxmint/21.3/"]="xUbuntu_22.04"
-["/opensuse-leap/15.4/"]="openSUSE_Leap_15.4"
+["/opensuse-leap/15.6/"]="openSUSE_Leap_15.6"
 ["/opensuse-leap/15.5/"]="openSUSE_Leap_15.5"
 )
 

@@ -54,7 +54,7 @@ LISTPATH_DEFAULT=" \
                     ubuntu/22.04/ \
                     ubuntu/24.04/ \
                     linuxmint/v21/ \
-                    opensuse-leap/15.4/ \
+                    opensuse-leap/15.6/ \
                     opensuse-leap/15.5/ \
                     "
 LISTPATH=""
