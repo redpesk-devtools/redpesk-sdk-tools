@@ -7,6 +7,9 @@ pipeline {
 
     stages {
         stage('Test SDK') {
+            options {
+                timeout(time: 2, unit: 'HOURS')
+            }
             steps {
                 script {
                     stage("Cleanup SDK xunit files") {
@@ -17,7 +20,7 @@ pipeline {
                     }
                     def tests_by_os = [:]
                     def data = readFile(file: 'ci/list_vm_2_test.txt')
-                    
+
                     for (String os_paths : data.split("\n")) {
                         for (String os_path : os_paths.split(" ")) {
                             def local_os_path = os_path
