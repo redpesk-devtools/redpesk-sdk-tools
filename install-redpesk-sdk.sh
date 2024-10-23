@@ -380,7 +380,7 @@ fedora)
 
 		if [ "${WRITE_CONF}" == "yes" ]; then
 
-			sudo rm -fr "${REPO_CONF_FILE} ${CI_REPO_CONF_FILE}"
+			sudo rm -fr "${REPO_CONF_FILE}" "${CI_REPO_CONF_FILE}"
 
 			ID_REPO=1
 
