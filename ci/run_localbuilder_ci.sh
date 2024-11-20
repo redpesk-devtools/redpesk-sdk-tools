@@ -48,8 +48,8 @@ LOG_DIR="${script_dir}/ci_log/$(date +%Y-%m-%d_%H-%M)"
 LISTPATH_DEFAULT=" \
                     almalinux/8/ \
                     almalinux/9/ \
-                    fedora/39/ \
                     fedora/40/ \
+                    fedora/41/ \
                     debian/11/ \
                     ubuntu/22.04/ \
                     ubuntu/24.04/ \

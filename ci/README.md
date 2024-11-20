@@ -28,8 +28,8 @@ OS=debian_11
 OS=opensuse_15.6
 OS=opensuse_15.5
 
-OS=fedora_39
 OS=fedora_40
+OS=fedora_41
 ```
 
 ### Quick test/regression testing

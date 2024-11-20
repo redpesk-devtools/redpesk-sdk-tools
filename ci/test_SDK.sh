@@ -22,8 +22,8 @@ declare -A list_distro_name
 list_distro_name=(
 ["/almalinux/8/"]="AlmaLinux_8"
 ["/almalinux/9/"]="AlmaLinux_9"
-["/fedora/39/"]="Fedora_39"
 ["/fedora/40/"]="Fedora_40"
+["/fedora/41/"]="Fedora_41"
 ["/debian/11/"]="Debian_11"
 ["/ubuntu/22.04/"]="xUbuntu_22.04"
 ["/ubuntu/24.04/"]="xUbuntu_24.04"

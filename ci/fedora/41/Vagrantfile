@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "fedora/39-cloud-base"
+  config.vm.box = "fedora/41-cloud-base"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -47,7 +47,7 @@ Vagrant.configure("2") do |config|
 
   # Disable the default share of the current code directory. Doing this
   # provides improved isolation between the vagrant box and your host
-  # by making sure your Vagrantfile isn't accessable to the vagrant box.
+  # by making sure your Vagrantfile isn't accessible to the vagrant box.
   # If you use this you may want to enable additional shared subfolders as
   # shown above.
   # config.vm.synced_folder ".", "/vagrant", disabled: true
@@ -75,5 +75,4 @@ Vagrant.configure("2") do |config|
   #   apt-get install -y apache2
   # SHELL
 end
-
 require '../../VagrantCommonConf.rb'
