@@ -51,6 +51,7 @@ LISTPATH_DEFAULT=" \
                     fedora/40/ \
                     fedora/41/ \
                     debian/11/ \
+                    debian/12/ \
                     ubuntu/22.04/ \
                     ubuntu/24.04/ \
                     linuxmint/v21/ \

@@ -146,7 +146,7 @@ REPO_CONF_FILE=""
 CI_REPO_CONF_FILE=""
 
 case $ID in
-ubuntu | linuxmint)
+debian | ubuntu | linuxmint)
 	REPO_CONF_FILE="/etc/apt/sources.list.d/${REPO_CONF_FILE_NAME}.list"
 	CI_REPO_CONF_FILE="/etc/apt/sources.list.d/${REPO_CI_CONF_FILE_NAME}.list"
 	;;
@@ -157,10 +157,6 @@ opensuse-leap)
 fedora | almalinux)
 	REPO_CONF_FILE="/etc/yum.repos.d/${REPO_CONF_FILE_NAME}.repo"
 	CI_REPO_CONF_FILE="/etc/yum.repos.d/${REPO_CI_CONF_FILE_NAME}.repo"
-	;;
-debian)
-	REPO_CONF_FILE="/etc/apt/sources.list.d/${REPO_CONF_FILE_NAME}.list"
-	CI_REPO_CONF_FILE="/etc/apt/sources.list.d/${REPO_CI_CONF_FILE_NAME}.list"
 	;;
 *)
 	error_message
@@ -228,7 +224,7 @@ function get_obs_distro_name {
 		;;
 	debian)
 		case $VERSION_ID in
-		11)
+		11 | 12)
 			echo "Debian_${VERSION_ID}"
 			;;
 		*)
@@ -499,7 +495,7 @@ EOF
 	;;
 debian)
 	case $VERSION_ID in
-	11)
+	11 | 12)
 		#Add redpesk repos (ca-certificates is here to fix VM CI test)
 		sudo apt-get update --yes
 		sudo apt-get install -y curl wget add-apt-key gnupg ca-certificates

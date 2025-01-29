@@ -25,6 +25,7 @@ list_distro_name=(
 ["/fedora/40/"]="Fedora_40"
 ["/fedora/41/"]="Fedora_41"
 ["/debian/11/"]="Debian_11"
+["/debian/12/"]="Debian_12"
 ["/ubuntu/22.04/"]="xUbuntu_22.04"
 ["/ubuntu/24.04/"]="xUbuntu_24.04"
 ["/linuxmint/21.3/"]="xUbuntu_22.04"

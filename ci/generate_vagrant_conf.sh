@@ -6,6 +6,7 @@ listevagrant=(
 ["./almalinux/8/Vagrantfile"]="almalinux/8"
 ["./almalinux/9/Vagrantfile"]="almalinux/9"
 ["./debian/11/Vagrantfile"]="generic/debian11"
+["./debian/12/Vagrantfile"]="generic/debian12"
 ["./fedora/40/Vagrantfile"]="fedora/40-beta-cloud-base"
 ["./fedora/40/Vagrantfile"]="fedora/41-cloud-base"
 ["./opensuse-leap/15.6/Vagrantfile"]="opensuse/Leap-15.6.x86_64"
