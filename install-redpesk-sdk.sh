@@ -1,6 +1,6 @@
 #!/bin/bash
 ###########################################################################
-# Copyright (C) 2020-2023 IoT.bzh
+# Copyright (C) 2020-2025 IoT.bzh
 #
 # Authors: Armand Bénéteau <armand.beneteau@iot.bzh>
 #          Ronan Le Martret <ronan.lemartret@iot.bzh>
@@ -26,7 +26,7 @@ SUPPORTED_DISTROS="AlmaLinux 8/9, Fedora 40/41/42, Linux Mint 21/21.1/21.2/21.3/
 
 #REDPESK_REPO can be given in command line, if so REDPESK_REPO must be the full path for the distro used.
 
-REDPESK_OS_VERSION_DEFAULT="batz-2.0-update"
+REDPESK_OS_VERSION_DEFAULT="batz-2.1-update"
 
 REDPESK_OS_VERSION=""
 
