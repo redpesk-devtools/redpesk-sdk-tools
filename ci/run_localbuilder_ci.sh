@@ -50,6 +50,7 @@ LISTPATH_DEFAULT=" \
                     almalinux/9/ \
                     fedora/40/ \
                     fedora/41/ \
+                    fedora/42/ \
                     debian/11/ \
                     debian/12/ \
                     ubuntu/22.04/ \

@@ -24,6 +24,7 @@ list_distro_name=(
 ["/almalinux/9/"]="AlmaLinux_9"
 ["/fedora/40/"]="Fedora_40"
 ["/fedora/41/"]="Fedora_41"
+["/fedora/42/"]="Fedora_42"
 ["/debian/11/"]="Debian_11"
 ["/debian/12/"]="Debian_12"
 ["/ubuntu/22.04/"]="xUbuntu_22.04"

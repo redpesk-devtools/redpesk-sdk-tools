@@ -31,6 +31,7 @@ OS=opensuse_15.5
 
 OS=fedora_40
 OS=fedora_41
+OS=fedora_42
 ```
 
 ### Quick test/regression testing
