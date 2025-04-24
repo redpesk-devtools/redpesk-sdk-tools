@@ -163,7 +163,7 @@ case ${ID} in
     debian)
         sudo sed -i '3inameserver 10.16.2.10\ ' /etc/resolv.conf
         ;;
-    almalinux)
+    fedora | almalinux)
         VERSION_ID=$(echo ${VERSION_ID} | cut -d"." -f1)
         ;;
 esac
