@@ -71,6 +71,11 @@ sdktest () {
             test "error" "test_native_install" "$line"
         fi
     else
+        case ${ID} in  
+            ubuntu | debian | linuxmint)
+                sudo systemctl start ntpd
+            ;;
+        esac
         if ./install-redpesk-sdk.sh -r "http://silo.redpesk.iot/redpesk/private/sdk/obs/${BRANCH}/sdk-third-party/${DISTRO_NAME}/latest/" \
                                     -r "http://silo.redpesk.iot/redpesk/private/sdk/obs/${BRANCH}/sdk/${DISTRO_NAME}/latest/" \
                                     -i "http://silo.redpesk.iot/redpesk/private/tools/obs/master/tools-third-party/${DISTRO_NAME}/latest/" \
