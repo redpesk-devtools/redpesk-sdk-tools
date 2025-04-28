@@ -73,7 +73,8 @@ sdktest () {
     else
         case ${ID} in  
             ubuntu | debian | linuxmint)
-                sudo systemctl start ntpd
+                sudo systemctl status systemd-timesyncd
+                sudo systemctl restart systemd-timesyncd
             ;;
         esac
         if ./install-redpesk-sdk.sh -r "http://silo.redpesk.iot/redpesk/private/sdk/obs/${BRANCH}/sdk-third-party/${DISTRO_NAME}/latest/" \
