@@ -31,19 +31,19 @@ PACKAGE_MANAGER=""
 SDK_REPO_FILE_NAME="redpesk-sdk"
 SDK_REPO_FILE_PATH=""
 SDK_REPO_URL_LIST=""
-SDK_REPO_ENABLE="yes"
+SDK_REPO_ENABLE=1
 
 CI_REPO_FILE_NAME="redpesk-ci"
 CI_REPO_FILE_PATH=""
 CI_REPO_URL_LIST=""
-CI_REPO_ENABLE="yes"
+CI_REPO_ENABLE=1
 
-SDK_WRITE_CONF="yes"
-CI_WRITE_CONF="yes"
+SDK_WRITE_CONF=1
+CI_WRITE_CONF=1
 
-NO_INSTALL="no"
-INTERACTIVE="yes"
-INSTALL_RECOMMENDED_PKG="yes"
+NO_INSTALL=0
+INTERACTIVE=1
+INSTALL_RECOMMENDED_PKG=1
 
 REDPESK_OS_VERSION="batz-2.1-update"
 
@@ -192,16 +192,14 @@ ask_overwrite_conf() {
 	local choice=""
 
 	if [ -f "$file_path" ]; then
-		if [ "$INTERACTIVE" = "yes" ]; then
-			read -r -p "The conf file $file_path already exists, update it ? [Y/n] " choice
-		fi
+		[ $INTERACTIVE -eq 1 ] && read -r -p "The conf file $file_path already exists, update it ? [Y/n] " choice
 
 		# Set to default if no input
 		choice="${choice:-$default}"
 
 		case "$choice" in
-			[yY]) eval "$var_name=yes" ;;
-			*)    eval "$var_name=no" ;;
+			[yY]) eval "$var_name=1" ;;
+			*)    eval "$var_name=0" ;;
 		esac
 	fi
 }
@@ -214,11 +212,11 @@ install_repo_and_packages() {
 	local id_repo=""
 	local no_recommend_opt=""
 
-	[ "${write_conf}" = "yes" ] && sudo rm -f "$file_path"
+	[ $write_conf -eq 1 ] && sudo rm -f "$file_path"
 
 	case "${PACKAGE_MANAGER}" in
 	dnf)
-		if [ "$write_conf" = "yes" ]; then
+		if [ $write_conf -eq 1 ]; then
 			for repo in $repo_list; do
 				# Retrieve repo name
 				id_repo=$(echo "$repo" | awk -F/ '{print $(NF-1)}')
@@ -236,12 +234,12 @@ EOF
 
 		sudo dnf clean expire-cache &>/dev/null
 		# Manage the "no recommended option" variable
-		[ "${INSTALL_RECOMMENDED_PKG}" = "no" ] && no_recommend_opt="--setopt=install_weak_deps=False"
+		[ $INSTALL_RECOMMENDED_PKG -eq 0 ] && no_recommend_opt="--setopt=install_weak_deps=False"
 		#Install base redpesk packages
-		[ "${NO_INSTALL}" = "no" ] && eval "sudo dnf install -y ${no_recommend_opt} \${LIST_PACKAGE_${prefix}_RPM}"
+		[ $NO_INSTALL -eq 0 ] && eval "sudo dnf install -y ${no_recommend_opt} \${LIST_PACKAGE_${prefix}_RPM}"
 		;;
 	apt)
-		if [ "$write_conf" = "yes" ]; then
+		if [ $write_conf -eq 1 ]; then
 			sudo mkdir -p /usr/share/keyrings
 			for repo in $repo_list; do
 				id_repo=$(echo "$repo" | awk -F/ '{print $(NF-1)}')
@@ -254,13 +252,13 @@ EOF
 
 		sudo apt update &>/dev/null
 		# Manage the "no recommended option" variable
-		[ "${INSTALL_RECOMMENDED_PKG}" = "no" ] && no_recommend_opt="--no-install-recommends"
+		[ $INSTALL_RECOMMENDED_PKG -eq 0 ] && no_recommend_opt="--no-install-recommends"
 		#Install base redpesk packages
-		[ "${NO_INSTALL}" = "no" ] && eval "sudo apt install -y ${no_recommend_opt} \${LIST_PACKAGE_${prefix}_DEB}"
+		[ $NO_INSTALL -eq 0 ] && eval "sudo apt install -y ${no_recommend_opt} \${LIST_PACKAGE_${prefix}_DEB}"
 		;;
 	zypper)
 		#Add redpesk repos
-		if [ "$write_conf" = "yes" ]; then
+		if [ $write_conf -eq 1 ]; then
 			for repo in $repo_list; do
 				id_repo=$(echo "$repo" | awk -F/ '{print $(NF-1)}')
 				sudo zypper lr | grep -q "redpesk-${id_repo}" && sudo zypper rr "redpesk-${id_repo}"
@@ -271,9 +269,9 @@ EOF
 		fi
 
 		# Manage the "no recommended option" variable
-		[ "${INSTALL_RECOMMENDED_PKG}" = "no" ] && no_recommend_opt="--no-recommends"
+		[ $INSTALL_RECOMMENDED_PKG -eq 0 ] && no_recommend_opt="--no-recommends"
 		#Install base redpesk packages
-		[ "${NO_INSTALL}" = "no" ] && eval "sudo zypper install -y ${no_recommend_opt} \${LIST_PACKAGE_${prefix}_RPM}"
+		[ $NO_INSTALL -eq 0 ] && eval "sudo zypper install -y ${no_recommend_opt} \${LIST_PACKAGE_${prefix}_RPM}"
 		;;
 	esac
 }
@@ -287,14 +285,14 @@ options=$(getopt -o k,c,r:,i:,o:,s,n,a,h -l sdk,rp-cli,sdkrepository:,cireposito
 
 while true; do
 	case $1 in
-		-k|--sdk)               CI_REPO_ENABLE="no"                                 ; shift ;;
-		-c|--rp-cli)            SDK_REPO_ENABLE="no"                                ; shift ;;
+		-k|--sdk)               CI_REPO_ENABLE=0                                    ; shift ;;
+		-c|--rp-cli)            SDK_REPO_ENABLE=0                                   ; shift ;;
 		-r|--sdkrepository)     shift; SDK_REPO_URL_LIST="$SDK_REPO_URL_LIST $1"    ; shift ;;
 		-i|--cirepository)      shift; CI_REPO_URL_LIST="$CI_REPO_URL_LIST $1"      ; shift ;;
 		-o|--osversion)         shift; REDPESK_OS_VERSION="$1"                      ; shift ;;
-		-s|--no-install)        NO_INSTALL="yes"                                    ; shift ;;
-		-n|--no-recommends)     INSTALL_RECOMMENDED_PKG="no"                        ; shift ;;
-		-a|--non-interactive)   INTERACTIVE="no"                                    ; shift ;;
+		-s|--no-install)        NO_INSTALL=1                                        ; shift ;;
+		-n|--no-recommends)     INSTALL_RECOMMENDED_PKG=0                           ; shift ;;
+		-a|--non-interactive)   INTERACTIVE=0                                       ; shift ;;
 		-h|--help)                                                                  usage ;;
 		*)                                                                          break ;;
 	esac
@@ -308,7 +306,7 @@ fi
 
 distro_detection
 
-if [ "$SDK_REPO_ENABLE" = "yes" ]; then
+if [ $SDK_REPO_ENABLE -eq 1 ]; then
 	echo -e "\nInstalling redpesk SDK repos"
 	if [ -z "${SDK_REPO_URL_LIST}" ]; then
 		SDK_REPO_URL_LIST="
@@ -319,7 +317,7 @@ if [ "$SDK_REPO_ENABLE" = "yes" ]; then
 	install_repo_and_packages "${SDK_REPO_URL_LIST}" "${SDK_REPO_FILE_PATH}" "${SDK_WRITE_CONF}" "SDK"
 fi
 
-if [ "$CI_REPO_ENABLE" = "yes" ]; then
+if [ $CI_REPO_ENABLE -eq 1 ]; then
 	echo -e "\nInstalling redpesk CI repos"
 	if [ -z "${CI_REPO_URL_LIST}" ]; then
 		CI_REPO_URL_LIST="
