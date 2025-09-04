@@ -25,10 +25,10 @@ pipeline {
                         for (String os_path : os_paths.split(" ")) {
                             def local_os_path = os_path
                             //tests_by_os["Test SDK ${os_path}"] = {
-                                        stage("Test SDK ${local_os_path} 1.1") {
+                                        stage("Test SDK ${local_os_path} 3.0") {
                                             sh """
                                             cd ci
-                                            ./run_SDK_ci.sh --vm-path ${local_os_path} --branch arz-1.1 --destroy
+                                            ./run_SDK_ci.sh --vm-path ${local_os_path} --branch corn-3.0 --destroy
                                         """
                                         }
                             //    }
@@ -43,10 +43,10 @@ pipeline {
                     """
                     }
 
-                    stage("Release SDK 1.1 inside private") {
+                    stage("Release SDK 3.0 inside private") {
                         build( job: "JF-sdk-Release", parameters: [
-                            string(name: 'RedpeskSdkVersion', value: 'arz-1.1'),
-                            string(name: 'ReleaseNumber', value: 'arz-1.1-update')
+                            string(name: 'RedpeskSdkVersion', value: 'corn-3.0'),
+                            string(name: 'ReleaseNumber', value: 'corn-3.0-update')
                             ]
                         )
                     }

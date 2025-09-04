@@ -19,7 +19,7 @@
 shopt -s extglob
 source /etc/os-release
 
-SUPPORTED_DISTROS="AlmaLinux 8/9, Fedora 40/41/42, Debian 11/12, Linux Mint 21/22, Ubuntu 22.04/24.04, OpenSUSE Leap 15.5/15.6"
+SUPPORTED_DISTROS="AlmaLinux 9/10, Fedora 41/42, Debian 11/12, Linux Mint 21/22, Ubuntu 22.04/24.04, OpenSUSE Leap 15.6"
 
 ##############################
 ####### DEFAULT VALUES #######
@@ -95,6 +95,11 @@ distro_detection() {
 			dnf repolist --enabled | grep -q "powertools" || sudo dnf config-manager --set-enabled crb
 			OBS_DISTRO_NAME="AlmaLinux_${VERSION_ID%%.*}"
 			;;
+		10.*)
+			#Add PowerTools needed for the lib-controller
+			dnf repolist --enabled | grep -q "powertools" || sudo dnf config-manager --set-enabled crb
+			OBS_DISTRO_NAME="AlmaLinux_${VERSION_ID%%.*}"
+			;;
 		*)
 			unsupported_distro_error
 			;;
@@ -103,7 +108,7 @@ distro_detection() {
 		;;
 	fedora)
 		case "$VERSION_ID" in
-		40| 41| 42)
+		41| 42)
 			OBS_DISTRO_NAME="Fedora_\$releasever"
 			;;
 		*)
@@ -150,7 +155,7 @@ distro_detection() {
 		;;
 	opensuse-leap)
 		case "$VERSION_ID" in
-		15.5 | 15.6)
+		15.6)
 			OBS_DISTRO_NAME="openSUSE_Leap_${VERSION_ID}"
 			;;
 		*)

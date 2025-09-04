@@ -27,9 +27,7 @@ OS=debian_11
 OS=debian_12
 
 OS=opensuse_15.6
-OS=opensuse_15.5
 
-OS=fedora_40
 OS=fedora_41
 OS=fedora_42
 ```

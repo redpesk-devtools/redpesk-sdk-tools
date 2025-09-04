@@ -1,6 +1,5 @@
-almalinux/8/
 almalinux/9/
-fedora/40/
+almalinux/10/
 fedora/41/
 fedora/42/
 debian/11/
@@ -9,4 +8,3 @@ ubuntu/22.04/
 ubuntu/24.04/
 linuxmint/v21/
 opensuse-leap/15.6/
-opensuse-leap/15.5/
