@@ -85,12 +85,7 @@ distro_detection() {
 	case "$ID" in
 	almalinux)
 		case "$VERSION_ID" in
-		9.*)
-			#Add PowerTools needed for the lib-controller
-			dnf repolist --enabled | grep -q "powertools" || sudo dnf config-manager --set-enabled crb
-			OBS_DISTRO_NAME="AlmaLinux_${VERSION_ID%%.*}"
-			;;
-		10.*)
+		9.*| 10.*)
 			#Add PowerTools needed for the lib-controller
 			dnf repolist --enabled | grep -q "powertools" || sudo dnf config-manager --set-enabled crb
 			OBS_DISTRO_NAME="AlmaLinux_${VERSION_ID%%.*}"
